@@ -115,6 +115,47 @@ module hwpe_subsystem
         .periph      ( periph[i]   )
       );
 
+    end else if (HWPE_CFG.HwpeList[i] == OPE) begin : gen_ope
+
+      /////////////
+      //   OPE   //
+      /////////////
+
+      redmule_top   #(
+        .ID_WIDTH    ( ID_WIDTH         ),
+        .N_CORES     ( N_CORES          ),
+        .DW          ( N_MASTER_PORT*32 ),
+        .`HCI_SIZE_PARAM(tcdm) ( HCI_HWPE_SIZE )
+      ) i_redmule    (
+        .clk_i       ( hwpe_clk[i] ),
+        .rst_ni      ( rst_n       ),
+        .test_mode_i ( test_mode   ),
+        .busy_o      ( busy[i]     ),
+        .evt_o       ( evt[i]      ),
+        .tcdm        ( tcdm[i]     ),
+        .periph      ( periph[i]   )
+      );
+    end else if (HWPE_CFG.HwpeList[i] == REDMULE_MOD) begin : gen_redmule_mod
+
+      /////////////////
+      // REDMULE MOD //
+      /////////////////
+
+      redmule_top   #(
+        .ID_WIDTH    ( ID_WIDTH         ),
+        .N_CORES     ( N_CORES          ),
+        .DW          ( N_MASTER_PORT*32 ),
+        .`HCI_SIZE_PARAM(tcdm) ( HCI_HWPE_SIZE )
+      ) i_redmule    (
+        .clk_i       ( hwpe_clk[i] ),
+        .rst_ni      ( rst_n       ),
+        .test_mode_i ( test_mode   ),
+        .busy_o      ( busy[i]     ),
+        .evt_o       ( evt[i]      ),
+        .tcdm        ( tcdm[i]     ),
+        .periph      ( periph[i]   )
+      );
+
     end else if (HWPE_CFG.HwpeList[i] == NEUREKA) begin : gen_neureka
 
       /////////////

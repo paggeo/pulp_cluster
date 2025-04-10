@@ -34,7 +34,9 @@ package pulp_cluster_package;
   typedef enum byte_t {
     REDMULE,
     NEUREKA,
-    SOFTEX
+    SOFTEX,
+    OPE, 
+    REDMULE_MOD
   } hwpe_type_e;
 
   parameter MAX_NUM_HWPES = 8;
@@ -173,6 +175,22 @@ package pulp_cluster_package;
   localparam byte_t AxiSubordinateIdwidth = 4;
   localparam byte_t AxiManagerIdwidth = AxiSubordinateIdwidth + $clog2(NumAxiSubordinatePorts);
 
+
+  bit HwpePresent_cfg = 1;
+  parameter hwpe_subsystem_cfg_t Hwpe_cfg = '{
+    HwpeList: '{REDMULE},
+    NumHwpes: 1
+  }
+
+  byte_t NumPorts_cfg = 0;
+  if (Hwpe_cfg.HwpeList[0] == REDMULE) begin
+    NumPorts_cfg = 32;
+  end else if (Hwpe_cfg.HwpeList[0] == OPE) begin
+    NumPorts_cfg = 8;
+  end else if (Hwpe_cfg.HwpeList[0] == REDMULE_MOD) begin
+    NumPorts_cfg = 32;
+  end
+
   localparam pulp_cluster_cfg_t PulpClusterDefaultCfg = '{
     CoreType: CV32,
     NumCores: 8,
@@ -185,11 +203,11 @@ package pulp_cluster_package;
     ClusterAliasBase: 'h0,
     NumSyncStages: 3,
     UseHci: 1,
-    TcdmSize: 64*1024,
-    TcdmNumBank: 16,
-    HwpePresent: 0,
-    HwpeCfg: '0,
-    HwpeNumPorts: 0,
+    TcdmSize: 8*64*1024,
+    TcdmNumBank: 32,
+    HwpePresent: HwpePresent_cfg
+    HwpeCfg: Hwpe_cfg,
+    HwpeNumPorts: NumPorts_cfg0,
     iCacheNumBanks: 2,
     iCacheNumLines: 1,
     iCacheNumWays: 4,
@@ -224,6 +242,7 @@ package pulp_cluster_package;
     EnableRemapAddress: 0,
     default: '0
   };
+
 
   typedef struct packed {
     logic gnt;
